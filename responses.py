@@ -5,7 +5,7 @@ import graphviz
 from datetime import datetime, timedelta
 
 # Import required constants
-from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH, HELP_MESSAGE
+from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH, ROYALS_DETAILS_PATH, HELP_MESSAGE
 
 # Function that generates the response based on user input
 def handle_response(message):
@@ -14,6 +14,8 @@ def handle_response(message):
     links_db = pd.read_csv(ACTIVE_LINKS_PATH)
     # Open the roads details database
     roads_db = pd.read_csv(ROADS_DETAILS_PATH)
+    # Open the royals details database
+    royals_db = pd.read_csv(ROYALS_DETAILS_PATH)
 
     # Transform to Lower-Case and split the given user input
     lc_message = message.lower().split(" ")
@@ -21,22 +23,26 @@ def handle_response(message):
 
     # User wants to query a map's links
     if command == "!map":
-        # Open the roads details database
-        roads_db = pd.read_csv(ROADS_DETAILS_PATH)
         # Get relevant parameters
         curr_map = get_full_name(lc_message[1])
-        # Get the various details
-        req_cols = ["Fiber", "Hide", "Ore", "Stone", "Wood", 
-                    "Dungeon_Elite", "Dungeon_Group", "Dungeon_Solo",
-                    "Roads_Group", "Roads_Raid", "Roads_Solo"]
-        curr_row = roads_db.loc[roads_db['Name'] == curr_map, req_cols].values[0]
-        # Return the message
-        message = f"{curr_map} contains the following:\n\n"
+        # Get the various columns required
+        resource_cols = ["Fiber", "Hide", "Ore", "Stone", "Wood"]
+        ava_chests = ["Roads_Group", "Roads_Raid", "Roads_Solo"]
+        dungeons = ["Dungeon_Elite", "Dungeon_Group", "Dungeon_Solo"]
+        req_cols = [resource_cols, ava_chests, dungeons]
+        req_cols_names = ["Resources", "Ava Chests", "Dungeons"]
+        # Instantiate the message
+        message = f"\n**{curr_map}** contains the following:\n\n"
+        # Iterate through the categories
         for i in range(len(req_cols)):
-            feature = req_cols[i]
-            is_present = False if np.isnan(curr_row[i]) else True
-            if is_present:
-                message += f"{feature}\n"
+            cols = req_cols[i]
+            curr_row = roads_db.loc[roads_db['Name'] == curr_map, cols].values[0]
+            message += f"**{req_cols_names[i]}**:\n"
+            for j in range(len(cols)):
+                is_present = False if np.isnan(curr_row[j]) else True
+                if is_present:
+                    message += f"{cols[j]}\n"
+            message += "\n"
         return False, message
 
     # User wants to add a zone
@@ -54,10 +60,11 @@ def handle_response(message):
         hours_left = int(hours_left)
         minutes_left = int(minutes_left)
         # Check if zones are in the list of actual zones
-        actual_zones = roads_db['Name'].values
-        if curr_map not in actual_zones:
+        roads_zones = roads_db['Name'].values
+        royal_zones = royals_db['Zone'].values
+        if (curr_map not in roads_zones) and (curr_map not in royal_zones):
             return False, f"{curr_map} is not an actual zone!"
-        if new_map not in actual_zones:
+        if (new_map not in roads_zones) and (new_map not in royal_zones):
             return False, f"{new_map} is not an actual zone!"
         # Calculate Closing Time
         now = datetime.now()
@@ -77,11 +84,12 @@ def handle_response(message):
         zone_1 = get_full_name(lc_message[1])
         zone_2 = get_full_name(lc_message[2])
         # Check if zones are in the list of actual zones
-        actual_zones = roads_db['Name'].values
-        if zone_1 not in actual_zones:
-            return False, f"{zone_1} is not an actual zone!"
-        if zone_2 not in actual_zones:
-            return False, f"{zone_2} is not an actual zone!"
+        roads_zones = roads_db['Name'].values
+        royal_zones = royals_db['Zone'].values
+        if (zone_1 not in roads_zones) and (zone_1 not in royal_zones):
+            return False, f"{curr_map} is not an actual zone!"
+        if (zone_2 not in roads_zones) and (zone_2 not in royal_zones):
+            return False, f"{new_map} is not an actual zone!"
         # Remove the link in the database
         links_db = links_db.drop(links_db[(links_db['Current Zone'] == zone_1) & (links_db['Neighbour Zone'] == zone_2)].index)
         links_db = links_db.drop(links_db[(links_db['Current Zone'] == zone_2) & (links_db['Neighbour Zone'] == zone_1)].index)
@@ -106,7 +114,7 @@ def handle_response(message):
             curr_node = node_list.pop(0)
             visited_list.append(curr_node)
             # Add the current node into the graph
-            add_node_to_graph(curr_node, roads_db, G)
+            add_node_to_graph(curr_node, roads_db, royals_db, G)
             added_list.append(curr_node)
             # Add the neighbouring nodes
             neighbouring_nodes = list(links_db.loc[links_db['Current Zone'] == curr_node, "Neighbour Zone"].values)
@@ -118,7 +126,7 @@ def handle_response(message):
                     if neighbour not in visited_list:
                         node_list.append(neighbour)
                     # Calculate time left
-                    added_list = add_edge_to_graph(curr_node, neighbour, portal_type, closing_time, added_list, roads_db, G)
+                    added_list = add_edge_to_graph(curr_node, neighbour, portal_type, closing_time, added_list, roads_db, royals_db, G)
         # Save the graph before sending it in the channel
         filename = "Temp"
         G.render(filename, format="png")
@@ -149,25 +157,34 @@ def get_full_name(given_name):
         return given_name
     
 # Function to get the information of a given node
-def add_node_to_graph(curr_node, roads_db, G):
-    node_name, node_tier, node_type = list(roads_db[['Name', 'Tier', 'Type']][roads_db['Name'] == curr_node].values[0])
-    node_str = node_name + "\n" + "T" + str(node_tier) + " " + node_type
-    G.node(node_name, style='filled', color="pink", shape="box", label=node_str)
+def add_node_to_graph(curr_node, roads_db, royals_db, G):
+    # Get the various list of zones in roads and royals respectively
+    roads_zones = roads_db['Name'].values
+    # Add the node if it is a roads zone
+    if curr_node in roads_zones:
+        node_name, node_tier, node_type = list(roads_db[['Name', 'Tier', 'Type']][roads_db['Name'] == curr_node].values[0])
+        node_str = node_name + "\n" + "T" + str(node_tier) + " " + node_type
+        G.node(node_name, style='filled', color="pink", shape="box", label=node_str)
+    # Add the node as a royal zone
+    else:
+        node_name, node_type = list(royals_db[['Zone', 'Type']][royals_db['Zone'] == curr_node].values[0])
+        node_str = node_name + "\n" + node_type + " zone"
+        G.node(node_name, style='filled', color="cyan", shape="box", label=node_str)
 
 # Function to add edge to the graph
-def add_edge_to_graph(source_node, dest_node, portal_type, closing_time, added_list, roads_db, G):
+def add_edge_to_graph(source_node, dest_node, portal_type, closing_time, added_list, roads_db, royals_db, G):
     # Add the duration node between the two zones
     closing_dt = datetime.strptime(closing_time, "%d/%m/%Y %H:%M")
     time_difference_in_minutes = (closing_dt - datetime.now()).seconds / 60
     hours_left = int(time_difference_in_minutes // 60)
     minutes_left = int(time_difference_in_minutes % 60)
     middle_node_name = f"{source_node}-{dest_node}"
-    node_str = f"{portal_type.upper()} {closing_time}\n{hours_left}H{minutes_left}M"
-    G.node(middle_node_name, style="filled", color=color_dict[portal_type], shape="eclipse", label=node_str)
+    node_str = f"{portal_type.upper()} {closing_time}H\n{hours_left} H{minutes_left}M"
+    G.node(middle_node_name, style="filled", color=color_dict[portal_type], shape="ellipse", label=node_str)
     G.edge(source_node, middle_node_name)
     # Add the neighbour zone
     if dest_node not in added_list:
-        add_node_to_graph(dest_node, roads_db, G)
+        add_node_to_graph(dest_node, roads_db, royals_db, G)
         G.edge(middle_node_name, dest_node)
         added_list.append(dest_node)
     return added_list
