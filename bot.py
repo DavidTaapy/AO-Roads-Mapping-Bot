@@ -10,12 +10,8 @@ async def send_message(message, user_message, is_private):
     # Get the response if possible
     try:
         # Get the response
-        response = responses.handle_response(user_message)
-        # Check if it is an image
-        is_file = False
-        if response[-4:] == ".png":
-            is_file = True
-        # Send message
+        is_file, response = responses.handle_response(user_message)
+        # Send message based on is_private and is_file
         if is_private:
             if is_file:
                 await message.author.send(file=discord.File(response))

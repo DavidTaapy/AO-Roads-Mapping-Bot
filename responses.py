@@ -32,7 +32,7 @@ def handle_response(message):
             is_present = False if np.isnan(curr_row[i]) else True
             if is_present:
                 message += f"{feature}\n"
-        return message
+        return False, message
 
     # User wants to add a zone
     if command == "!add":
@@ -49,9 +49,9 @@ def handle_response(message):
         # Check if zones are in the list of actual zones
         actual_zones = roads_db['Name'].values
         if curr_map not in actual_zones:
-            return f"{curr_map} is not an actual zone!"
+            return False, f"{curr_map} is not an actual zone!"
         if new_map not in actual_zones:
-            return f"{new_map} is not an actual zone!"
+            return False, f"{new_map} is not an actual zone!"
         # Calculate Closing Time
         now = datetime.now()
         closing_time = now + timedelta(hours=hours_left, minutes=minutes_left)
@@ -62,7 +62,7 @@ def handle_response(message):
         # Export updated DB
         links_db.to_csv(ACTIVE_LINKS_PATH, index=False)
         # Return success message
-        return f"Added {new_map} to {curr_map} until {closing_time_str}!"
+        return False, f"Added {new_map} to {curr_map} until {closing_time_str}!"
 
     # User wants to delete a zone
     if command == "!delete":
@@ -76,16 +76,16 @@ def handle_response(message):
         # Check if zones are in the list of actual zones
         actual_zones = roads_db['Name'].values
         if zone_1 not in actual_zones:
-            return f"{zone_1} is not an actual zone!"
+            return False, f"{zone_1} is not an actual zone!"
         if zone_2 not in actual_zones:
-            return f"{zone_2} is not an actual zone!"
+            return False, f"{zone_2} is not an actual zone!"
         # Remove the link in the database
         links_db = links_db.drop(links_db[(links_db['Current Zone'] == zone_1) & (links_db['Neighbour Zone'] == zone_2)].index)
         links_db = links_db.drop(links_db[(links_db['Current Zone'] == zone_2) & (links_db['Neighbour Zone'] == zone_1)].index)
         # Export updated DB
         links_db.to_csv(ACTIVE_LINKS_PATH, index=False)
         # Return success message
-        return f"Deleted link between {zone_2} and {zone_1}!"
+        return False, f"Deleted link between {zone_2} and {zone_1}!"
 
     # User wants to check a zone's layout
     if command == "!show":
@@ -134,11 +134,11 @@ def handle_response(message):
         # Save the graph before sending it in the channel
         filename = "Temp"
         G.render(filename, format="png")
-        return filename + ".png"
+        return True, filename + ".png"
 
     # Help command
     if command == "!help":
-        return HELP_MESSAGE
+        return False, HELP_MESSAGE
 
 # Function to get full name if short form is given
 def get_full_name(given_name):
