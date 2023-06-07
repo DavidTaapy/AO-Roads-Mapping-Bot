@@ -10,7 +10,12 @@ from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH, HELP_MESSAGE
 # Function that generates the response based on user input
 def handle_response(message):
     
-    # Transform to Lower-Case
+    # Open the active links file
+    links_db = pd.read_csv(ACTIVE_LINKS_PATH)
+    # Open the roads details database
+    roads_db = pd.read_csv(ROADS_DETAILS_PATH)
+
+    # Transform to Lower-Case and split the given user input
     lc_message = message.lower().split(" ")
     command = lc_message[0]
 
@@ -36,16 +41,18 @@ def handle_response(message):
 
     # User wants to add a zone
     if command == "!add":
-        # Open the current links file
-        # Format - Current Zone, Neighbour Zone, Type, Closing Time
-        links_db = pd.read_csv(ACTIVE_LINKS_PATH)
-        # Open the roads details database
-        roads_db = pd.read_csv(ROADS_DETAILS_PATH)
         # Get relevant parameters
         curr_map = get_full_name(lc_message[1])
         new_map = get_full_name(lc_message[2])
         portal_type = lc_message[3]
-        hours_left, minutes_left = int(lc_message[4][:2]), int(lc_message[4][2:])
+        duration = lc_message[4]
+        # Get the hours and minutes based of the two formats - HH:MM / HHMM
+        if ":" in duration:
+            hours_left, minutes_left = duration.split(":")
+        else:
+            hours_left, minutes_left = duration[:2], duration[2:]
+        hours_left = int(hours_left)
+        minutes_left = int(minutes_left)
         # Check if zones are in the list of actual zones
         actual_zones = roads_db['Name'].values
         if curr_map not in actual_zones:
@@ -56,7 +63,7 @@ def handle_response(message):
         now = datetime.now()
         closing_time = now + timedelta(hours=hours_left, minutes=minutes_left)
         closing_time_str = str(closing_time.strftime("%d/%m/%Y %H:%M"))
-        # Add the link to the Active Links Database
+        # Add the links to the Active Links Database - Both ways
         links_db.loc[len(links_db)] = [curr_map, new_map, portal_type, closing_time_str]
         links_db.loc[len(links_db)] = [new_map, curr_map, portal_type, closing_time_str]
         # Export updated DB
@@ -66,10 +73,6 @@ def handle_response(message):
 
     # User wants to delete a zone
     if command == "!delete":
-        # Read the roads link database
-        links_db = pd.read_csv(ACTIVE_LINKS_PATH)
-        # Open the roads details database
-        roads_db = pd.read_csv(ROADS_DETAILS_PATH)
         # Get the full names of the zones
         zone_1 = get_full_name(lc_message[1])
         zone_2 = get_full_name(lc_message[2])
