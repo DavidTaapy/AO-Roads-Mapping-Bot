@@ -2,13 +2,10 @@
 import pandas as pd
 import numpy as np
 import graphviz
-import matplotlib.pyplot as plt
-import discord
 from datetime import datetime, timedelta
 
 # Import required constants
-from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH
-from messages import HELP_MESSAGE
+from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH, HELP_MESSAGE
 
 # Function that generates the response based on user input
 def handle_response(message):
