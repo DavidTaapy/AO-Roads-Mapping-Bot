@@ -92,48 +92,33 @@ def handle_response(message):
 
     # User wants to check a zone's layout
     if command == "!show":
-        # Read the roads link database
-        links_db = pd.read_csv(ACTIVE_LINKS_PATH)
-        # Open the roads details database
-        roads_db = pd.read_csv(ROADS_DETAILS_PATH)
         # Get relevant parameters
         queried_map = get_full_name(lc_message[1])
         # Instantiate the node list with the queried zone
-        visited_nodes = []
         node_list = [queried_map]
-        # Instantiate a list for edges
-        edge_list = []
+        visited_list = []
+        added_list = []
         # Instantiate the graph
         G = graphviz.Digraph()
         # Get all the links in a recursive manner
         while node_list:
-            # Get the first node
+            # Get the first node in the queue
             curr_node = node_list.pop(0)
-            # Get all the neighbouring nodes to the current node if the current node has yet been visited
-            if curr_node not in visited_nodes:
-                # Add the current node into the graph
-                node_row = list(roads_db[['Name', 'Tier', 'Type']][roads_db['Name'] == curr_node].values[0])
-                node_name, node_tier, node_type = node_row
-                node_str = node_name + "\n" + "T" + str(node_tier) + " " + node_type
-                G.node(node_name, style='filled', color="pink", shape="box", label=node_str)
-                # Add the neighbouring nodes
-                visited_nodes.append(curr_node)
-                neighbouring_nodes = list(links_db.loc[links_db['Current Zone'] == curr_node, "Neighbour Zone"].values)
-                for neighbour in neighbouring_nodes:
-                    if neighbour not in visited_nodes:
-                        portal_type, closing_time = links_db.loc[(links_db['Current Zone'] == curr_node) & (links_db['Neighbour Zone'] == neighbour), ["Type", "Closing Time"]].values[0]
+            visited_list.append(curr_node)
+            # Add the current node into the graph
+            add_node_to_graph(curr_node, roads_db, G)
+            added_list.append(curr_node)
+            # Add the neighbouring nodes
+            neighbouring_nodes = list(links_db.loc[links_db['Current Zone'] == curr_node, "Neighbour Zone"].values)
+            for neighbour in neighbouring_nodes:
+                if neighbour not in visited_list:
+                    # Get the relveant information
+                    portal_type, closing_time = links_db.loc[(links_db['Current Zone'] == curr_node) & (links_db['Neighbour Zone'] == neighbour), ["Type", "Closing Time"]].values[0]
+                    # Add neighbour to the queue
+                    if neighbour not in visited_list:
                         node_list.append(neighbour)
-                        edge_list.append((curr_node, neighbour, portal_type, closing_time))
-        # Add the various edges
-        for edge in edge_list:
-            # Get the relevant node information
-            source_node, dest_node, portal_type, closing_time = edge
-            # Calculate time left
-            closing_dt = datetime.strptime(closing_time, "%d/%m/%Y %H:%M")
-            time_difference_in_minutes = (closing_dt - datetime.now()).seconds / 60
-            hours_left = int(time_difference_in_minutes // 60)
-            minutes_left = int(time_difference_in_minutes % 60)
-            G.edge(source_node, dest_node, label=f"{portal_type.upper()} {closing_time}\n{hours_left}H{minutes_left}M")
+                    # Calculate time left
+                    added_list = add_edge_to_graph(curr_node, neighbour, portal_type, closing_time, added_list, roads_db, G)
         # Save the graph before sending it in the channel
         filename = "Temp"
         G.render(filename, format="png")
@@ -142,6 +127,13 @@ def handle_response(message):
     # Help command
     if command == "!help":
         return False, HELP_MESSAGE
+
+# Dictionary of the portal colours
+color_dict = {
+    "g": "green",
+    "b": "lightblue",
+    "y": "yellow"
+}
 
 # Function to get full name if short form is given
 def get_full_name(given_name):
@@ -155,3 +147,27 @@ def get_full_name(given_name):
         return full_name
     else:
         return given_name
+    
+# Function to get the information of a given node
+def add_node_to_graph(curr_node, roads_db, G):
+    node_name, node_tier, node_type = list(roads_db[['Name', 'Tier', 'Type']][roads_db['Name'] == curr_node].values[0])
+    node_str = node_name + "\n" + "T" + str(node_tier) + " " + node_type
+    G.node(node_name, style='filled', color="pink", shape="box", label=node_str)
+
+# Function to add edge to the graph
+def add_edge_to_graph(source_node, dest_node, portal_type, closing_time, added_list, roads_db, G):
+    # Add the duration node between the two zones
+    closing_dt = datetime.strptime(closing_time, "%d/%m/%Y %H:%M")
+    time_difference_in_minutes = (closing_dt - datetime.now()).seconds / 60
+    hours_left = int(time_difference_in_minutes // 60)
+    minutes_left = int(time_difference_in_minutes % 60)
+    middle_node_name = f"{source_node}-{dest_node}"
+    node_str = f"{portal_type.upper()} {closing_time}\n{hours_left}H{minutes_left}M"
+    G.node(middle_node_name, style="filled", color=color_dict[portal_type], shape="eclipse", label=node_str)
+    G.edge(source_node, middle_node_name)
+    # Add the neighbour zone
+    if dest_node not in added_list:
+        add_node_to_graph(dest_node, roads_db, G)
+        G.edge(middle_node_name, dest_node)
+        added_list.append(dest_node)
+    return added_list
