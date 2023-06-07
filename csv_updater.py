@@ -3,6 +3,9 @@
 # Import required libraries
 import pandas as pd
 
+# Import required information
+from constants import ROADS_DETAILS_PATH, UPDATE_LIST_PATH
+
 # Function that helps with updating the roads database
 def update_roads_db(db_path, update_list_path, column_to_update, new_value):
     # Read the current roads database and list of zones to update
@@ -17,8 +20,8 @@ def update_roads_db(db_path, update_list_path, column_to_update, new_value):
 # Run the program
 if __name__ == "__main__":
     # Specify the required paths
-    db_path = "./Roads_Details.csv"
-    update_list_path = "./Update_List.csv"
+    db_path = ROADS_DETAILS_PATH
+    update_list_path = UPDATE_LIST_PATH
     # Specify the required parameters
     column_to_update = 'Roads_Group'
     new_value = 1
