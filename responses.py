@@ -19,7 +19,7 @@ def handle_response(message):
         # Open the roads details database
         roads_db = pd.read_csv(ROADS_DETAILS_PATH)
         # Get relevant parameters
-        curr_map = get_full_name(lc_message[1].lower()).lower()
+        curr_map = get_full_name(lc_message[1])
         # Get the various details
         req_cols = ["Fiber", "Hide", "Ore", "Stone", "Wood", 
                     "Dungeon_Elite", "Dungeon_Group", "Dungeon_Solo",
@@ -42,8 +42,8 @@ def handle_response(message):
         # Open the roads details database
         roads_db = pd.read_csv(ROADS_DETAILS_PATH)
         # Get relevant parameters
-        curr_map = get_full_name(lc_message[1].lower()).lower()
-        new_map = get_full_name(lc_message[2].lower()).lower()
+        curr_map = get_full_name(lc_message[1])
+        new_map = get_full_name(lc_message[2])
         portal_type = lc_message[3]
         hours_left, minutes_left = int(lc_message[4][:2]), int(lc_message[4][2:])
         # Check if zones are in the list of actual zones
@@ -71,8 +71,8 @@ def handle_response(message):
         # Open the roads details database
         roads_db = pd.read_csv(ROADS_DETAILS_PATH)
         # Get the full names of the zones
-        zone_1 = get_full_name(lc_message[1].lower()).lower()
-        zone_2 = get_full_name(lc_message[2].lower()).lower()
+        zone_1 = get_full_name(lc_message[1])
+        zone_2 = get_full_name(lc_message[2])
         # Check if zones are in the list of actual zones
         actual_zones = roads_db['Name'].values
         if zone_1 not in actual_zones:
@@ -94,7 +94,7 @@ def handle_response(message):
         # Open the roads details database
         roads_db = pd.read_csv(ROADS_DETAILS_PATH)
         # Get relevant parameters
-        queried_map = get_full_name(lc_message[1].lower()).lower()
+        queried_map = get_full_name(lc_message[1])
         # Instantiate the node list with the queried zone
         visited_nodes = []
         node_list = [queried_map]
@@ -144,6 +144,8 @@ def handle_response(message):
 def get_full_name(given_name):
     # Get the roads database
     roads_db = pd.read_csv(ROADS_DETAILS_PATH)
+    # Change to lower case
+    given_name = given_name.lower()
     # Check if short form is used
     if len(given_name) == 6:
         full_name = roads_db.loc[roads_db['Short Form'] == given_name, "Name"].values[0]
