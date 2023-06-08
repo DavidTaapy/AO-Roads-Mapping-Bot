@@ -4,7 +4,7 @@ import discord
 import responses
 
 # Import required constants
-from constants import TOKEN
+from hidden import TOKEN
 
 # Asynchronous function to send message to channel / user
 async def send_message(message, user_message, is_private):
@@ -63,5 +63,8 @@ def run_discord_bot():
         else:
             await send_message(message, user_message, False)
 
-    # Run the client
-    client.run(os.environ["DISCORD_TOKEN"])
+    # Run the client on Heroku
+    # client.run(os.environ["DISCORD_TOKEN"])
+
+    # Run the client locally
+    client.run(TOKEN)
