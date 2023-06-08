@@ -1,4 +1,5 @@
 # Import required libraries
+import os
 import discord
 import responses
 
@@ -63,4 +64,4 @@ def run_discord_bot():
             await send_message(message, user_message, False)
 
     # Run the client
-    client.run(TOKEN)
+    client.run(os.environ["DISCORD_TOKEN"])
