@@ -1,4 +1,5 @@
-
-constants.py
 *.pyc
 *.png
+Temp
+secrets.py
+*.bin
