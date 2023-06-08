@@ -122,11 +122,20 @@ def handle_response(message):
                 if neighbour not in visited_list:
                     # Get the relveant information
                     portal_type, closing_time = links_db.loc[(links_db['Current Zone'] == curr_node) & (links_db['Neighbour Zone'] == neighbour), ["Type", "Closing Time"]].values[0]
+                    closing_dt = datetime.strptime(closing_time, "%d/%m/%Y %H:%M")
+                    # Check if link has expired and remove if it has
+                    if closing_dt < datetime.now():
+                        # Remove the link in the database
+                        links_db = links_db.drop(links_db[(links_db['Current Zone'] == curr_node) & (links_db['Neighbour Zone'] == neighbour)].index)
+                        links_db = links_db.drop(links_db[(links_db['Current Zone'] == neighbour) & (links_db['Neighbour Zone'] == curr_node)].index)
+                        # Export updated DB and re-import
+                        links_db.to_csv(ACTIVE_LINKS_PATH, index=False)
+                        continue
                     # Add neighbour to the queue
                     if neighbour not in visited_list:
                         node_list.append(neighbour)
                     # Calculate time left
-                    added_list = add_edge_to_graph(curr_node, neighbour, portal_type, closing_time, added_list, roads_db, royals_db, G)
+                    added_list = add_edge_to_graph(curr_node, neighbour, portal_type, closing_dt, added_list, roads_db, royals_db, G)
         # Save the graph before sending it in the channel
         filename = "Temp"
         G.render(filename, format="png")
@@ -172,14 +181,13 @@ def add_node_to_graph(curr_node, roads_db, royals_db, G):
         G.node(node_name, style='filled', color="cyan", shape="box", label=node_str)
 
 # Function to add edge to the graph
-def add_edge_to_graph(source_node, dest_node, portal_type, closing_time, added_list, roads_db, royals_db, G):
+def add_edge_to_graph(source_node, dest_node, portal_type, closing_dt, added_list, roads_db, royals_db, G):
     # Add the duration node between the two zones
-    closing_dt = datetime.strptime(closing_time, "%d/%m/%Y %H:%M")
     time_difference_in_minutes = (closing_dt - datetime.now()).seconds / 60
     hours_left = int(time_difference_in_minutes // 60)
     minutes_left = int(time_difference_in_minutes % 60)
     middle_node_name = f"{source_node}-{dest_node}"
-    node_str = f"{portal_type.upper()} {closing_time}H\n{hours_left} H{minutes_left}M"
+    node_str = f"{portal_type.upper()} {closing_dt}H\n{hours_left}H {minutes_left}M"
     G.node(middle_node_name, style="filled", color=color_dict[portal_type], shape="ellipse", label=node_str)
     G.edge(source_node, middle_node_name)
     # Add the neighbour zone
