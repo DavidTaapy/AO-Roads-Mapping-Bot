@@ -29,3 +29,12 @@ In these commands:
 You can also use g, b, and y as shorthand!  
 <time> is the remaining time left on the portal, which must be formatted as HHMM!  
 """
+
+#### Static Data ####
+
+# Dictionary of the portal colours
+COLOR_DICT = {
+    "g": "green",
+    "b": "lightblue",
+    "y": "yellow"
+}

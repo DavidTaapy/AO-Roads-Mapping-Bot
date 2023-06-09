@@ -5,7 +5,7 @@ import graphviz
 from datetime import datetime, timedelta
 
 # Import required constants
-from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH, ROYALS_DETAILS_PATH, HELP_MESSAGE
+from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH, ROYALS_DETAILS_PATH, HELP_MESSAGE, COLOR_DICT
 
 # Function that generates the response based on user input
 def handle_response(message):
@@ -145,13 +145,6 @@ def handle_response(message):
     if command == "!help":
         return False, HELP_MESSAGE
 
-# Dictionary of the portal colours
-color_dict = {
-    "g": "green",
-    "b": "lightblue",
-    "y": "yellow"
-}
-
 # Function to get full name if short form is given
 def get_full_name(given_name):
     # Get the roads database
@@ -188,7 +181,7 @@ def add_edge_to_graph(source_node, dest_node, portal_type, closing_dt, added_lis
     minutes_left = int(time_difference_in_minutes % 60)
     middle_node_name = f"{source_node}-{dest_node}"
     node_str = f"{portal_type.upper()} {closing_dt}H\n{hours_left}H {minutes_left}M"
-    G.node(middle_node_name, style="filled", color=color_dict[portal_type], shape="ellipse", label=node_str)
+    G.node(middle_node_name, style="filled", color=COLOR_DICT[portal_type], shape="ellipse", label=node_str)
     G.edge(source_node, middle_node_name)
     # Add the neighbour zone
     if dest_node not in added_list:
