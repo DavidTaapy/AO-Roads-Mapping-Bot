@@ -30,7 +30,7 @@ def handle_response(message):
     # User wants to query a map's links
     if command == "!show":
         # Get relevant parameters
-        curr_map = get_full_name(lc_message[1]).title()
+        curr_map = get_full_name(lc_message[1], roads_db, royals_db).title()
         # Instantiate the message
         message = f"**{curr_map}** contains the following:\n\n"
         # Open the XML file for the given map
@@ -44,8 +44,8 @@ def handle_response(message):
     # User wants to add a zone
     if command == "!add":
         # Get relevant parameters
-        curr_map = get_full_name(lc_message[1])
-        new_map = get_full_name(lc_message[2])
+        curr_map = get_full_name(lc_message[1], roads_db, royals_db)
+        new_map = get_full_name(lc_message[2], roads_db, royals_db)
         portal_type = lc_message[3]
         duration = lc_message[4]
         # Get the hours and minutes based of the two formats - HH:MM / HHMM
@@ -77,8 +77,8 @@ def handle_response(message):
     # User wants to delete a zone
     if command == "!delete":
         # Get the full names of the zones
-        zone_1 = get_full_name(lc_message[1])
-        zone_2 = get_full_name(lc_message[2])
+        zone_1 = get_full_name(lc_message[1], roads_db, royals_db)
+        zone_2 = get_full_name(lc_message[2], roads_db, royals_db)
         # Check if zones are in the list of actual zones
         roads_zones = roads_db['Name'].values
         royal_zones = royals_db['Zone'].values
@@ -97,7 +97,7 @@ def handle_response(message):
     # User wants to check a zone's layout
     if command == "!map":
         # Get relevant parameters
-        queried_map = get_full_name(lc_message[1])
+        queried_map = get_full_name(lc_message[1], roads_db, royals_db)
         # Instantiate the node list with the queried zone
         node_list = [queried_map]
         visited_list = []
@@ -142,14 +142,16 @@ def handle_response(message):
         return False, HELP_MESSAGE
 
 # Function to get full name if short form is given
-def get_full_name(given_name):
-    # Get the roads database
-    roads_db = pd.read_csv(ROADS_DETAILS_PATH)
+def get_full_name(given_name, roads_db, royals_db):
     # Change to lower case
     given_name = given_name.lower()
     # Check if short form is used
-    if len(given_name) == 6:
-        full_name = roads_db.loc[roads_db['Short Form'] == given_name, "Name"].values[0]
+    len_name = len(given_name)
+    if len_name == 6 or len_name == 8:
+        if given_name in roads_db['Short Form'].unique():
+            full_name = roads_db.loc[roads_db['Short Form'] == given_name, "Name"].values[0]
+        else:
+            full_name = royals_db.loc[royals_db['Short Form'] == given_name, "Zone"].values[0]
         return full_name
     else:
         return given_name
@@ -176,7 +178,7 @@ def add_edge_to_graph(source_node, dest_node, portal_type, closing_dt, added_lis
     hours_left = int(time_difference_in_minutes // 60)
     minutes_left = int(time_difference_in_minutes % 60)
     middle_node_name = f"{source_node}-{dest_node}"
-    node_str = f"{portal_type.upper()} {closing_dt.strftime('%H:%M')}H\n{hours_left}H {minutes_left}M Left!"
+    node_str = f"{portal_type.upper()} {closing_dt.strftime('%H:%M')}H\n{hours_left}H{minutes_left}M Left!"
     G.node(middle_node_name, style="filled", color=COLOR_DICT[portal_type], shape="ellipse", label=node_str)
     G.edge(source_node, middle_node_name)
     # Add the neighbour zone
