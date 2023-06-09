@@ -161,12 +161,12 @@ def add_node_to_graph(curr_node, roads_db, royals_db, G):
     # Add the node if it is a roads zone
     if curr_node in roads_zones:
         node_name, node_tier, node_type = list(roads_db[['Name', 'Tier', 'Type']][roads_db['Name'] == curr_node].values[0])
-        node_str = node_name + "\n" + "T" + str(node_tier) + " " + node_type
+        node_str = node_name.title() + "\n" + "T" + str(node_tier) + " " + node_type
         G.node(node_name, style='filled', color="hotpink", shape="box", label=node_str)
     # Add the node as a royal zone
     else:
         node_name, node_type = list(royals_db[['Zone', 'Type']][royals_db['Zone'] == curr_node].values[0])
-        node_str = node_name + "\n" + node_type + " zone"
+        node_str = node_name.title() + "\n" + node_type.title() + " Zone"
         G.node(node_name, style='filled', color=COLOR_DICT[node_type], shape="box", label=node_str)
 
 # Function to add edge to the graph
