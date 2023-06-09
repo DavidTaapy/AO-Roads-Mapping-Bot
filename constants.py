@@ -3,6 +3,8 @@ ROADS_DETAILS_PATH = "./Data/Roads_Details.csv"
 ROYALS_DETAILS_PATH = "./Data/Royals_Details.csv"
 UPDATE_LIST_PATH = "./Data/Update_List.csv"
 ACTIVE_LINKS_PATH = "./Data/Active_Links.csv"
+RESOURCE_TYPES_PATH = "./Data/Resource Types.csv"
+WORLD_XML_PATH = "./Data/Roads Game Files/Cluster/cluster/world.xml"
 
 # Help Message
 HELP_MESSAGE = """
@@ -38,3 +40,27 @@ COLOR_DICT = {
     "b": "lightblue",
     "y": "yellow"
 }
+
+# Dictionary of the resources
+RESOURCE_LAYERS = [
+    "M_FR_ROAD_RES_Cave_01",
+    "M_FR_ROAD_RES_Clearing_01",
+    "S_FR_ROAD_RES_Cave_01",
+    "S_FR_ROAD_RES_Clearing_01",
+    "S_FR_ROAD_RES_MountainSide_01"
+]
+
+# Dictionary of the avalonian chests
+AVA_CHEST_LAYERS = [
+    "M_FR_ROAD_PVE_GROUP_01",
+    "M_FR_ROAD_PVE_RAID_01",
+    "M_FR_ROAD_PVE_SOLO_01",
+    "S_FR_ROAD_PVE_Encounter_01",
+    "S_FR_ROAD_PVE_Encounter_02"
+]
+
+# Dictionary of the dungeons
+DUNGEON_LAYERS = [
+    "S_FR_ROAD_DNG_GROUP_Entrance_01",
+    "S_FR_ROAD_DNG_RAID_Entrance_01"
+]

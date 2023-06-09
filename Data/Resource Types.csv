@@ -1,0 +1,131 @@
+﻿Name,Layer,Item
+M_FR_ROAD_PVE_GROUP_01,Layer_01,Common Group_T4 Blue Chest
+M_FR_ROAD_PVE_GROUP_01,Layer_02,Rare Group_T6 Blue Chest
+M_FR_ROAD_PVE_GROUP_01,Layer_03,Legendary Group_T8 Blue Chest
+M_FR_ROAD_PVE_RAID_01,Layer_01,Super Legendary Raid_T8 Yellow Chest
+M_FR_ROAD_PVE_RAID_01,Layer_02,Epic Raid_T6 Yellow Chest
+M_FR_ROAD_PVE_SOLO_01,Layer_01,Epic Solo_T8 Green Chest
+M_FR_ROAD_PVE_SOLO_01,Layer_02,Very Common Solo_T4 Green Chest
+M_FR_ROAD_PVE_SOLO_01,Layer_03,Uncommon Solo_T6 Green Chest
+M_FR_ROAD_RES_Cave_01,Layer_15,Hide/Ore Epic T6/7
+M_FR_ROAD_RES_Cave_01,Layer_16,Hide/Ore Legendary T6/7/8
+M_FR_ROAD_RES_Cave_01,Layer_17,Hide/Ore Rare T5/6
+M_FR_ROAD_RES_Cave_01,Layer_25,Ore/Stone Epic T6/7
+M_FR_ROAD_RES_Cave_01,Layer_26,Ore/Stone Legendary T6/7/8
+M_FR_ROAD_RES_Cave_01,Layer_27,Ore/Stone Rare T5/6
+M_FR_ROAD_RES_Cave_01,Layer_11,Hide/Ore Common T4/5
+M_FR_ROAD_RES_Cave_01,Layer_12,Hide/Ore Epic T6/7/8
+M_FR_ROAD_RES_Cave_01,Layer_13,Hide/Ore Rare T6/7
+M_FR_ROAD_RES_Cave_01,Layer_14,Hide/Ore Uncommon T5/6
+M_FR_ROAD_RES_Cave_01,Layer_21,Ore/Stone Common T4/5
+M_FR_ROAD_RES_Cave_01,Layer_22,Ore/Stone Epic T6/7/8
+M_FR_ROAD_RES_Cave_01,Layer_23,Ore/Stone Rare T6/7
+M_FR_ROAD_RES_Cave_01,Layer_24,Ore/Stone Uncommon T5/6
+M_FR_ROAD_RES_Cave_01,Layer_18,Hide/Ore Epic T5/6
+M_FR_ROAD_RES_Cave_01,Layer_19,Hide/Ore Legendary T6/7
+M_FR_ROAD_RES_Cave_01,Layer_20,Hide/Ore Super Legendary T6/7/8
+M_FR_ROAD_RES_Cave_01,Layer_28,Ore/Stone Epic T5/6
+M_FR_ROAD_RES_Cave_01,Layer_29,Ore/Stone Legendary T6/7
+M_FR_ROAD_RES_Cave_01,Layer_30,Ore/Stone Super Legendary T6/7/8
+M_FR_ROAD_RES_Clearing_01,Layer_03,Fiber/Hide Epic T6/7
+M_FR_ROAD_RES_Clearing_01,Layer_09,Fiber/Hide Legendary T6/7/8
+M_FR_ROAD_RES_Clearing_01,Layer_10,Fiber/Hide Rare T5/6
+M_FR_ROAD_RES_Clearing_01,Layer_15,Stone/Wood Epic T6/7
+M_FR_ROAD_RES_Clearing_01,Layer_16,Stone/Wood Legendary T6/7/8
+M_FR_ROAD_RES_Clearing_01,Layer_17,Stone/Wood Rare T5/6
+M_FR_ROAD_RES_Clearing_01,Layer_25,Wood/Fiber Epic T6/7
+M_FR_ROAD_RES_Clearing_01,Layer_26,Wood/Fiber Legendary T6/7/8
+M_FR_ROAD_RES_Clearing_01,Layer_27,Wood/Fiber Rare T5/6
+M_FR_ROAD_RES_Clearing_01,Layer_04,Fiber/Hide Common T4/5
+M_FR_ROAD_RES_Clearing_01,Layer_05,Fiber/Hide Epic T6/7/8
+M_FR_ROAD_RES_Clearing_01,Layer_06,Fiber/Hide Rare T6/7
+M_FR_ROAD_RES_Clearing_01,Layer_07,Fiber/Hide Uncommon T5/6
+M_FR_ROAD_RES_Clearing_01,Layer_11,Stone/Wood  Rare T6/7
+M_FR_ROAD_RES_Clearing_01,Layer_12,Stone/Wood Common T4/5
+M_FR_ROAD_RES_Clearing_01,Layer_13,Stone/Wood Epic T6/7/8
+M_FR_ROAD_RES_Clearing_01,Layer_14,Stone/Wood Uncommon T5/6
+M_FR_ROAD_RES_Clearing_01,Layer_21,Wood/Fiber Common T4/5
+M_FR_ROAD_RES_Clearing_01,Layer_22,Wood/Fiber Epic T6/7/8
+M_FR_ROAD_RES_Clearing_01,Layer_23,Wood/Fiber Rare T6/7
+M_FR_ROAD_RES_Clearing_01,Layer_24,Wood/Fiber Uncommon T5/6
+M_FR_ROAD_RES_Clearing_01,Layer_01,Fiber/Hide Legendary T6/7
+M_FR_ROAD_RES_Clearing_01,Layer_02,Fiber/Hide Epic T5/6
+M_FR_ROAD_RES_Clearing_01,Layer_08,Fiber/Hide Super Legendary T6/7/8
+M_FR_ROAD_RES_Clearing_01,Layer_18,Stone/Wood Epic T5/6
+M_FR_ROAD_RES_Clearing_01,Layer_19,Stone/Wood Legendary T6/7
+M_FR_ROAD_RES_Clearing_01,Layer_20,Stone/Wood Super Legendary T6/7/8
+M_FR_ROAD_RES_Clearing_01,Layer_28,Wood/Fiber Epic T5/6
+M_FR_ROAD_RES_Clearing_01,Layer_29,Wood/Fiber Legendary T6/7
+M_FR_ROAD_RES_Clearing_01,Layer_30,Wood/Fiber Super Legendary T6/7/8
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_01,Legendary Group T8 KPR
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_02,Common Group T4 KPR
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_03,Rare Group T6 KPR
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_06,Rare Group T6 HER
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_07,Common Group T4 HER
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_08,Legendary Group T8 HER
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_09,Rare Group T6 MOR
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_10,Common Group T4 MOR
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_11,Legendary Group T8 MOR
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_13,Rare Group T6 UND
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_14,Common Group T4 UND
+S_FR_ROAD_DNG_GROUP_Entrance_01,Layer_15,Legendary Group T8 UND
+S_FR_ROAD_DNG_RAID_Entrance_01,Layer_01,Epic T6 Avalonian Dungeon
+S_FR_ROAD_DNG_RAID_Entrance_01,Layer_02,Super Legendary T8 Avalonian Dungeon
+S_FR_ROAD_PVE_Encounter_01,Layer_01,Epic T8
+S_FR_ROAD_PVE_Encounter_01,Layer_02,Uncommon T6
+S_FR_ROAD_PVE_Encounter_01,Layer_03,Very Common T4
+S_FR_ROAD_PVE_Encounter_01,Layer_04,Uncommon T6b Quad Chest
+S_FR_ROAD_PVE_Encounter_01,Layer_05,Epic T8b Quad Chest
+S_FR_ROAD_PVE_Encounter_01,Layer_06,Very Common T4b Quad Chest
+S_FR_ROAD_PVE_Encounter_02,Layer_01,Rare T6
+S_FR_ROAD_PVE_Encounter_02,Layer_02,Legendary T8
+S_FR_ROAD_RES_Cave_01,Layer_05,Hide/Ore Epic T6/7/8
+S_FR_ROAD_RES_Cave_01,Layer_07,Hide/Ore Rare T6/7
+S_FR_ROAD_RES_Cave_01,Layer_08,Hide/Ore Uncommon T5/6
+S_FR_ROAD_RES_Cave_01,Layer_15,Ore/Stone Epic T6/7/8
+S_FR_ROAD_RES_Cave_01,Layer_16,Ore/Stone Rare T6/7
+S_FR_ROAD_RES_Cave_01,Layer_17,Ore/Stone Uncommon T5/6
+S_FR_ROAD_RES_Cave_01,Layer_01,Hide/Ore Rare T6/7/8
+S_FR_ROAD_RES_Cave_01,Layer_02,Hide/Ore Common T5/6
+S_FR_ROAD_RES_Cave_01,Layer_03,Hide/Ore Uncommon T6/7
+S_FR_ROAD_RES_Cave_01,Layer_04,Hide/Ore Very Common T4/5
+S_FR_ROAD_RES_Cave_01,Layer_06,Ore/Stone Common T5/6
+S_FR_ROAD_RES_Cave_01,Layer_12,Ore/Stone Rare T6/7/8
+S_FR_ROAD_RES_Cave_01,Layer_13,Ore/Stone Uncommon T6/7
+S_FR_ROAD_RES_Cave_01,Layer_14,Ore/Stone Very Common T4/5
+S_FR_ROAD_RES_Cave_01,Layer_09,Hide/Ore Epic T6/7
+S_FR_ROAD_RES_Cave_01,Layer_10,Hide/Ore Leg T6/7/8
+S_FR_ROAD_RES_Cave_01,Layer_11,Hide/Ore Rare T5/6
+S_FR_ROAD_RES_Cave_01,Layer_18,Ore/Stone Epic T6/7
+S_FR_ROAD_RES_Cave_01,Layer_19,Ore/Stone Leg T6/7/8
+S_FR_ROAD_RES_Cave_01,Layer_20,Ore/Stone Rare T5/6
+S_FR_ROAD_RES_Clearing_01,Layer_05,Fiber/Hide Epic T6/7/8
+S_FR_ROAD_RES_Clearing_01,Layer_07,Fiber/Hide Rare T6/7
+S_FR_ROAD_RES_Clearing_01,Layer_08,Fiber/Hide Uncommon T5/6
+S_FR_ROAD_RES_Clearing_01,Layer_15,Wood/Fiber Epic T6/7/8
+S_FR_ROAD_RES_Clearing_01,Layer_16,Wood/Fiber Rare T6/7
+S_FR_ROAD_RES_Clearing_01,Layer_17,Wood/Fiber Uncommon T5/6
+S_FR_ROAD_RES_Clearing_01,Layer_01,Fiber/Hide Rare T6/7/8
+S_FR_ROAD_RES_Clearing_01,Layer_02,Fiber/Hide Common T5/6
+S_FR_ROAD_RES_Clearing_01,Layer_03,Fiber/Hide Uncommon T6/7
+S_FR_ROAD_RES_Clearing_01,Layer_04,Fiber/Hide Very Common T4/5
+S_FR_ROAD_RES_Clearing_01,Layer_06,Wood/Fiber Common T5/6
+S_FR_ROAD_RES_Clearing_01,Layer_12,Wood/Fiber Uncommon T6/7
+S_FR_ROAD_RES_Clearing_01,Layer_13,Wood/Fiber Rare T6/7/8
+S_FR_ROAD_RES_Clearing_01,Layer_14,Wood/Fiber Very Common T4/5
+S_FR_ROAD_RES_Clearing_01,Layer_09,Fiber/Hide Epic T6/7
+S_FR_ROAD_RES_Clearing_01,Layer_10,Fiber/Hide Leg T6/7/8
+S_FR_ROAD_RES_Clearing_01,Layer_11,Fiber/Hide Rare T5/6
+S_FR_ROAD_RES_Clearing_01,Layer_18,Wood/Fiber Epic T6/7
+S_FR_ROAD_RES_Clearing_01,Layer_19,Wood/Fiber Leg T6/7/8
+S_FR_ROAD_RES_Clearing_01,Layer_20,Wood/Fiber Rare T5/6
+S_FR_ROAD_RES_MountainSide_01,Layer_05,Stone/Wood Uncommon T5/6
+S_FR_ROAD_RES_MountainSide_01,Layer_07,Stone/Wood Rare T6/7
+S_FR_ROAD_RES_MountainSide_01,Layer_08,Stone/Wood Epic T6/7/8
+S_FR_ROAD_RES_MountainSide_01,Layer_01,Stone/Wood Very Common T4/5
+S_FR_ROAD_RES_MountainSide_01,Layer_03,Stone/Wood Common T5/6
+S_FR_ROAD_RES_MountainSide_01,Layer_04,Stone/Wood Uncommon T6/7
+S_FR_ROAD_RES_MountainSide_01,Layer_06,Stone/Wood Rare T6/7/8
+S_FR_ROAD_RES_MountainSide_01,Layer_09,Stone/Wood Rare T5/6
+S_FR_ROAD_RES_MountainSide_01,Layer_10,Stone/Wood Epic T6/7
+S_FR_ROAD_RES_MountainSide_01,Layer_11,Stone/Wood Leg T6/7/8

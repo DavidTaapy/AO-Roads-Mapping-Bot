@@ -3,9 +3,12 @@ import pandas as pd
 import numpy as np
 import graphviz
 from datetime import datetime, timedelta
+from bs4 import BeautifulSoup
 
 # Import required constants
-from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH, ROYALS_DETAILS_PATH, HELP_MESSAGE, COLOR_DICT
+from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH, ROYALS_DETAILS_PATH, WORLD_XML_PATH, RESOURCE_TYPES_PATH
+from constants import HELP_MESSAGE, COLOR_DICT
+from constants import RESOURCE_LAYERS, AVA_CHEST_LAYERS, DUNGEON_LAYERS
 
 # Function that generates the response based on user input
 def handle_response(message):
@@ -16,7 +19,10 @@ def handle_response(message):
     roads_db = pd.read_csv(ROADS_DETAILS_PATH)
     # Open the royals details database
     royals_db = pd.read_csv(ROYALS_DETAILS_PATH)
-
+    # Open the resource types database
+    resources_db = pd.read_csv(RESOURCE_TYPES_PATH)
+    # Open the world xml file
+    world_xml = open_xml(WORLD_XML_PATH)
     # Transform to Lower-Case and split the given user input
     lc_message = message.lower().split(" ")
     command = lc_message[0]
@@ -24,25 +30,15 @@ def handle_response(message):
     # User wants to query a map's links
     if command == "!map":
         # Get relevant parameters
-        curr_map = get_full_name(lc_message[1])
-        # Get the various columns required
-        resource_cols = ["Fiber", "Hide", "Ore", "Stone", "Wood"]
-        ava_chests = ["Roads_Group", "Roads_Raid", "Roads_Solo"]
-        dungeons = ["Dungeon_Elite", "Dungeon_Group", "Dungeon_Solo"]
-        req_cols = [resource_cols, ava_chests, dungeons]
-        req_cols_names = ["Resources", "Ava Chests", "Dungeons"]
+        curr_map = get_full_name(lc_message[1]).title()
         # Instantiate the message
-        message = f"\n**{curr_map}** contains the following:\n\n"
-        # Iterate through the categories
-        for i in range(len(req_cols)):
-            cols = req_cols[i]
-            curr_row = roads_db.loc[roads_db['Name'] == curr_map, cols].values[0]
-            message += f"**{req_cols_names[i]}**:\n"
-            for j in range(len(cols)):
-                is_present = False if np.isnan(curr_row[j]) else True
-                if is_present:
-                    message += f"{cols[j]}\n"
-            message += "\n"
+        message = f"**{curr_map}** contains the following:\n\n"
+        # Open the XML file for the given map
+        cluster = find_cluster(world_xml, curr_map) 
+        file_id = cluster['file']
+        cluster_xml = open_xml(f"./Data/Roads Game Files/Cluster/cluster/{file_id}")
+        message = add_features_for_zone(cluster_xml, resources_db, message)
+        # Return message
         return False, message
 
     # User wants to add a zone
@@ -189,3 +185,58 @@ def add_edge_to_graph(source_node, dest_node, portal_type, closing_dt, added_lis
         G.edge(middle_node_name, dest_node)
         added_list.append(dest_node)
     return added_list
+
+# Function to open XML file
+def open_xml(path):
+    # Read the file data
+    with open(path, 'r') as f:
+        data = f.read()
+    # Parse the file using BS4
+    bs_data = BeautifulSoup(data, "xml")
+    # Find all the clusters
+    return bs_data
+
+# Find the cluster given a cluster name
+def find_cluster(xml_data, cluster_name):
+    # Find all the clusters
+    clusters = xml_data.findAll('cluster')
+    # Find the given cluster's xml data
+    for cluster in clusters:
+        if cluster['displayname'] == cluster_name:
+            return cluster
+        
+# Function to add features to a zone
+def add_features_for_zone(cluster_xml, resources_db, message):
+    # Add the resources in the zone
+    message += add_resources_for_zone(cluster_xml, resources_db, RESOURCE_LAYERS, "resources")
+    # Add the avalonian chests in the zone
+    message += add_resources_for_zone(cluster_xml, resources_db, AVA_CHEST_LAYERS, "ava chests")
+    # Add the dungeons in the zone
+    message += add_resources_for_zone(cluster_xml, resources_db, DUNGEON_LAYERS, "dungeons")  
+    return message
+
+# # Function to add resources to a zone
+def add_resources_for_zone(cluster_xml, features_db, feature_layer, feature_name):
+    # Add the header message
+    feature_list = []
+    # Find all template instances
+    template_instances = cluster_xml.findAll('templateinstance')
+    # Find all the resource template instances
+    for instance in template_instances:
+        instance_ref = instance['ref']
+        if instance_ref in feature_layer:
+            active_layers = instance.findAll('activelayer')
+            for layer in active_layers:
+                layer_id = layer['id']
+                # Add the layer if it is something we are interested in, else skip
+                try:
+                    feature_list.append(features_db.loc[(features_db['Name'] == instance_ref) & (features_db['Layer'] == layer_id), "Item"].values[0])
+                except:
+                    pass
+    # Return the message
+    message = ""
+    if len(feature_list) > 0:
+        message += f"The following {feature_name} are present:\n"
+        for feature in feature_list:
+            message += f"{feature}\n"
+    return message + "\n"
