@@ -40,8 +40,8 @@ COLOR_DICT = {
     "b": "cadetblue",
     "y": "darkgoldenrod1",
     "blue": "cornflowerblue",
-    "yellow": "yellow",
-    "black": "gray",
+    "yellow": "gold1",
+    "black": "grey27",
     "red": "firebrick3"
 }
 
