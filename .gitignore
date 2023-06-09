@@ -3,3 +3,6 @@
 Temp
 secrets.py
 *.bin
+*.xml
+*.json
+*.txt
