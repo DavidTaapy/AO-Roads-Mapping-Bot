@@ -36,13 +36,13 @@ You can also use g, b, and y as shorthand!
 
 # Dictionary of the portal colours
 COLOR_DICT = {
-    "g": "green",
-    "b": "lightblue",
-    "y": "yellow",
-    "blue": "cyan",
+    "g": "darkolivegreen",
+    "b": "cadetblue",
+    "y": "darkgoldenrod1",
+    "blue": "cornflowerblue",
     "yellow": "yellow",
     "black": "gray",
-    "red": "red"
+    "red": "firebrick3"
 }
 
 # Dictionary of the resources
