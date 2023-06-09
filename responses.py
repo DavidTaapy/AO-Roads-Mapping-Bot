@@ -28,7 +28,7 @@ def handle_response(message):
     command = lc_message[0]
 
     # User wants to query a map's links
-    if command == "!map":
+    if command == "!show":
         # Get relevant parameters
         curr_map = get_full_name(lc_message[1]).title()
         # Instantiate the message
@@ -95,7 +95,7 @@ def handle_response(message):
         return False, f"Deleted link between {zone_2} and {zone_1}!"
 
     # User wants to check a zone's layout
-    if command == "!show":
+    if command == "!map":
         # Get relevant parameters
         queried_map = get_full_name(lc_message[1])
         # Instantiate the node list with the queried zone
@@ -167,7 +167,7 @@ def add_node_to_graph(curr_node, roads_db, royals_db, G):
     else:
         node_name, node_type = list(royals_db[['Zone', 'Type']][royals_db['Zone'] == curr_node].values[0])
         node_str = node_name + "\n" + node_type + " zone"
-        G.node(node_name, style='filled', color="cyan", shape="box", label=node_str)
+        G.node(node_name, style='filled', color=COLOR_DICT[node_type], shape="box", label=node_str)
 
 # Function to add edge to the graph
 def add_edge_to_graph(source_node, dest_node, portal_type, closing_dt, added_list, roads_db, royals_db, G):

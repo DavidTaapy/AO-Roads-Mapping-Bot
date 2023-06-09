@@ -38,7 +38,11 @@ You can also use g, b, and y as shorthand!
 COLOR_DICT = {
     "g": "green",
     "b": "lightblue",
-    "y": "yellow"
+    "y": "yellow",
+    "blue": "cyan",
+    "yellow": "yellow",
+    "black": "black",
+    "red": "red"
 }
 
 # Dictionary of the resources
