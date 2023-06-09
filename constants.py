@@ -41,7 +41,7 @@ COLOR_DICT = {
     "y": "yellow",
     "blue": "cyan",
     "yellow": "yellow",
-    "black": "black",
+    "black": "gray",
     "red": "red"
 }
 
