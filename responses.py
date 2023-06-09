@@ -176,7 +176,7 @@ def add_edge_to_graph(source_node, dest_node, portal_type, closing_dt, added_lis
     hours_left = int(time_difference_in_minutes // 60)
     minutes_left = int(time_difference_in_minutes % 60)
     middle_node_name = f"{source_node}-{dest_node}"
-    node_str = f"{portal_type.upper()} {closing_dt}H\n{hours_left}H {minutes_left}M"
+    node_str = f"{portal_type.upper()} {closing_dt.strftime('%H:%M')}H\n{hours_left}H {minutes_left}M Left!"
     G.node(middle_node_name, style="filled", color=COLOR_DICT[portal_type], shape="ellipse", label=node_str)
     G.edge(source_node, middle_node_name)
     # Add the neighbour zone
