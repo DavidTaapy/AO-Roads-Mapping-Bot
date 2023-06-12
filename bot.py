@@ -1,5 +1,4 @@
 # Import required libraries
-import os
 import discord
 import responses
 
@@ -15,15 +14,22 @@ async def send_message(message, user_message, is_private):
         # Send message based on is_private and is_file
         if is_private:
             if is_file:
-                await message.author.send(file=discord.File(response))
+                for resp in response:
+                    if resp.split(".")[-1] == "png":
+                        await message.author.send(file=discord.File(response))
+                    else:
+                        await message.author.send(response)
             else:
                 await message.author.send(response)
         else:
             if is_file:
-                await message.channel.send(file=discord.File(response))
+                for resp in response:
+                    if resp.split(".")[-1] == "png":
+                        await message.channel.send(file=discord.File(resp))
+                    else:
+                        await message.channel.send(resp)
             else:
                 await message.channel.send(response)
-        # Send file
     except Exception as error:
         print(error)
 

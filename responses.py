@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
 # Import required constants
-from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH, ROYALS_DETAILS_PATH, WORLD_XML_PATH, RESOURCE_TYPES_PATH
+from constants import ACTIVE_LINKS_PATH, ROADS_DETAILS_PATH, ROYALS_DETAILS_PATH, WORLD_XML_PATH, RESOURCE_TYPES_PATH, MAPS_DIRECTORY_PATH
 from constants import HELP_MESSAGE, COLOR_DICT
 from constants import RESOURCE_LAYERS, AVA_CHEST_LAYERS, DUNGEON_LAYERS
 
@@ -38,8 +38,9 @@ def handle_response(message):
         file_id = cluster['file']
         cluster_xml = open_xml(f"./Data/Roads Game Files/Cluster/cluster/{file_id}")
         message = add_features_for_zone(cluster_xml, resources_db, message)
+        map_img = get_map_image(file_id, MAPS_DIRECTORY_PATH)
         # Return message
-        return False, message
+        return True, [message, map_img]
 
     # User wants to add a zone
     if command == "!add":
@@ -135,7 +136,7 @@ def handle_response(message):
         # Save the graph before sending it in the channel
         filename = "Temp"
         G.render(filename, format="png")
-        return True, filename + ".png"
+        return True, [filename + ".png"]
 
     # Help command
     if command == "!help":
@@ -242,3 +243,8 @@ def add_resources_for_zone(cluster_xml, features_db, feature_layer, feature_name
         for feature in feature_list:
             message += f"{feature}\n"
     return message + "\n"
+
+# Function to get map image for given map name
+def get_map_image(file_id, MAPS_DIRECTORY_PATH):
+    file_name = MAPS_DIRECTORY_PATH + file_id.split(".")[0] + ".png"
+    return file_name
