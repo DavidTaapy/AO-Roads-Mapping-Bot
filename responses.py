@@ -31,12 +31,14 @@ def handle_response(message):
     if command == "!show":
         # Get relevant parameters
         curr_map = get_full_name(lc_message[1], roads_db, royals_db).title()
-        # Instantiate the message
-        message = f"**{curr_map}** contains the following:\n\n"
         # Open the XML file for the given map
         cluster = find_cluster(world_xml, curr_map) 
         file_id = cluster['file']
         cluster_xml = open_xml(f"./Data/Roads Game Files/Cluster/cluster/{file_id}")
+        # Instantiate the message
+        map_tier = file_id[20:22]
+        message = f"**{curr_map} ({map_tier})** contains the following:\n\n"
+        # Add the features and map
         message = add_features_for_zone(cluster_xml, resources_db, message)
         map_img = get_map_image(file_id, MAPS_DIRECTORY_PATH)
         # Return message
