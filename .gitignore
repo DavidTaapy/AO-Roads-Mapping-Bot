@@ -6,3 +6,5 @@ secrets.py
 *.xml
 *.json
 *.txt
+Data/Active_Links.csv
+hidden.py
