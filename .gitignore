@@ -8,3 +8,4 @@ secrets.py
 *.txt
 Data/Active_Links.csv
 hidden.py
+.venv
