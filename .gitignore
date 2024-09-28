@@ -1,10 +1,7 @@
 *.pyc
-*.png
 Temp
 secrets.py
 *.bin
-*.xml
-*.json
 *.txt
 Data/Active_Links.csv
 hidden.py
