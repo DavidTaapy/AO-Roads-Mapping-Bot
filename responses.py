@@ -27,122 +27,125 @@ def handle_response(message):
     lc_message = message.lower().split(" ")
     command = lc_message[0]
 
-    # User wants to query a map's links
-    if command == "!show":
-        # Get relevant parameters
-        curr_map = get_full_name(lc_message[1], roads_db, royals_db).title()
-        # Open the XML file for the given map
-        cluster = find_cluster(world_xml, curr_map) 
-        file_id = cluster['file']
-        cluster_xml = open_xml(f"./Data/Roads Game Files/Cluster/{file_id}")
-        # Instantiate the message
-        map_tier = file_id[20:22]
-        message = f"**{curr_map} ({map_tier})** contains the following:\n\n"
-        # Add the features and map
-        message = add_features_for_zone(cluster_xml, resources_db, message)
-        map_img = get_map_image(file_id, MAPS_DIRECTORY_PATH)
-        # Return message
-        return True, [message, map_img]
+    try:
+        # User wants to query a map's links
+        if command == "!show":
+            # Get relevant parameters
+            curr_map = get_full_name(lc_message[1], roads_db, royals_db).title()
+            # Open the XML file for the given map
+            cluster = find_cluster(world_xml, curr_map) 
+            file_id = cluster['file']
+            cluster_xml = open_xml(f"./Data/Roads Game Files/Cluster/{file_id}")
+            # Instantiate the message
+            map_tier = file_id[20:22]
+            message = f"**{curr_map} ({map_tier})** contains the following:\n\n"
+            # Add the features and map
+            message = add_features_for_zone(cluster_xml, resources_db, message)
+            map_img = get_map_image(file_id, MAPS_DIRECTORY_PATH)
+            # Return message
+            return True, [message, map_img]
 
-    # User wants to add a zone
-    if command == "!add":
-        # Get relevant parameters
-        curr_map = get_full_name(lc_message[1], roads_db, royals_db)
-        new_map = get_full_name(lc_message[2], roads_db, royals_db)
-        portal_type = lc_message[3]
-        duration = lc_message[4]
-        # Get the hours and minutes based of the two formats - HH:MM / HHMM
-        if ":" in duration:
-            hours_left, minutes_left = duration.split(":")
-        else:
-            hours_left, minutes_left = duration[:2], duration[2:]
-        hours_left = int(hours_left)
-        minutes_left = int(minutes_left)
-        # Check if zones are in the list of actual zones
-        roads_zones = roads_db['Name'].values
-        royal_zones = royals_db['Zone'].values
-        if (curr_map not in roads_zones) and (curr_map not in royal_zones):
-            return False, f"{curr_map} is not an actual zone!"
-        if (new_map not in roads_zones) and (new_map not in royal_zones):
-            return False, f"{new_map} is not an actual zone!"
-        # Calculate Closing Time
-        now = datetime.now()
-        closing_time = now + timedelta(hours=hours_left, minutes=minutes_left)
-        closing_time_str = str(closing_time.strftime("%d/%m/%Y %H:%M"))
-        # Add the links to the Active Links Database - Both ways
-        links_db.loc[len(links_db)] = [curr_map, new_map, portal_type, closing_time_str]
-        links_db.loc[len(links_db)] = [new_map, curr_map, portal_type, closing_time_str]
-        # Export updated DB
-        links_db.to_csv(ACTIVE_LINKS_PATH, index=False)
-        # Return success message
-        return False, f"Added {new_map} to {curr_map} until {closing_time_str}!"
+        # User wants to add a zone
+        if command == "!add":
+            # Get relevant parameters
+            curr_map = get_full_name(lc_message[1], roads_db, royals_db)
+            new_map = get_full_name(lc_message[2], roads_db, royals_db)
+            portal_type = lc_message[3]
+            duration = lc_message[4]
+            # Get the hours and minutes based of the two formats - HH:MM / HHMM
+            if ":" in duration:
+                hours_left, minutes_left = duration.split(":")
+            else:
+                hours_left, minutes_left = duration[:2], duration[2:]
+            hours_left = int(hours_left)
+            minutes_left = int(minutes_left)
+            # Check if zones are in the list of actual zones
+            roads_zones = roads_db['Name'].values
+            royal_zones = royals_db['Zone'].values
+            if (curr_map not in roads_zones) and (curr_map not in royal_zones):
+                return False, f"{curr_map} is not an actual zone!"
+            if (new_map not in roads_zones) and (new_map not in royal_zones):
+                return False, f"{new_map} is not an actual zone!"
+            # Calculate Closing Time
+            now = datetime.now()
+            closing_time = now + timedelta(hours=hours_left, minutes=minutes_left)
+            closing_time_str = str(closing_time.strftime("%d/%m/%Y %H:%M"))
+            # Add the links to the Active Links Database - Both ways
+            links_db.loc[len(links_db)] = [curr_map, new_map, portal_type, closing_time_str]
+            links_db.loc[len(links_db)] = [new_map, curr_map, portal_type, closing_time_str]
+            # Export updated DB
+            links_db.to_csv(ACTIVE_LINKS_PATH, index=False)
+            # Return success message
+            return False, f"Added {new_map} to {curr_map} until {closing_time_str}!"
 
-    # User wants to delete a zone
-    if command == "!delete":
-        # Get the full names of the zones
-        zone_1 = get_full_name(lc_message[1], roads_db, royals_db)
-        zone_2 = get_full_name(lc_message[2], roads_db, royals_db)
-        # Check if zones are in the list of actual zones
-        roads_zones = roads_db['Name'].values
-        royal_zones = royals_db['Zone'].values
-        if (zone_1 not in roads_zones) and (zone_1 not in royal_zones):
-            return False, f"{curr_map} is not an actual zone!"
-        if (zone_2 not in roads_zones) and (zone_2 not in royal_zones):
-            return False, f"{new_map} is not an actual zone!"
-        # Remove the link in the database
-        links_db = links_db.drop(links_db[(links_db['Current Zone'] == zone_1) & (links_db['Neighbour Zone'] == zone_2)].index)
-        links_db = links_db.drop(links_db[(links_db['Current Zone'] == zone_2) & (links_db['Neighbour Zone'] == zone_1)].index)
-        # Export updated DB
-        links_db.to_csv(ACTIVE_LINKS_PATH, index=False)
-        # Return success message
-        return False, f"Deleted link between {zone_2} and {zone_1}!"
+        # User wants to delete a zone
+        if command == "!delete":
+            # Get the full names of the zones
+            zone_1 = get_full_name(lc_message[1], roads_db, royals_db)
+            zone_2 = get_full_name(lc_message[2], roads_db, royals_db)
+            # Check if zones are in the list of actual zones
+            roads_zones = roads_db['Name'].values
+            royal_zones = royals_db['Zone'].values
+            if (zone_1 not in roads_zones) and (zone_1 not in royal_zones):
+                return False, f"{curr_map} is not an actual zone!"
+            if (zone_2 not in roads_zones) and (zone_2 not in royal_zones):
+                return False, f"{new_map} is not an actual zone!"
+            # Remove the link in the database
+            links_db = links_db.drop(links_db[(links_db['Current Zone'] == zone_1) & (links_db['Neighbour Zone'] == zone_2)].index)
+            links_db = links_db.drop(links_db[(links_db['Current Zone'] == zone_2) & (links_db['Neighbour Zone'] == zone_1)].index)
+            # Export updated DB
+            links_db.to_csv(ACTIVE_LINKS_PATH, index=False)
+            # Return success message
+            return False, f"Deleted link between {zone_2} and {zone_1}!"
 
-    # User wants to check a zone's layout
-    if command == "!map":
-        # Get relevant parameters
-        queried_map = get_full_name(lc_message[1], roads_db, royals_db)
-        # Instantiate the node list with the queried zone
-        node_list = [queried_map]
-        visited_list = []
-        added_list = []
-        # Instantiate the graph
-        G = graphviz.Digraph()
-        # Get all the links in a recursive manner
-        while node_list:
-            # Get the first node in the queue
-            curr_node = node_list.pop(0)
-            visited_list.append(curr_node)
-            # Add the current node into the graph
-            add_node_to_graph(curr_node, roads_db, royals_db, G)
-            added_list.append(curr_node)
-            # Add the neighbouring nodes
-            neighbouring_nodes = list(links_db.loc[links_db['Current Zone'] == curr_node, "Neighbour Zone"].values)
-            for neighbour in neighbouring_nodes:
-                if neighbour not in visited_list:
-                    # Get the relveant information
-                    portal_type, closing_time = links_db.loc[(links_db['Current Zone'] == curr_node) & (links_db['Neighbour Zone'] == neighbour), ["Type", "Closing Time"]].values[0]
-                    closing_dt = datetime.strptime(closing_time, "%d/%m/%Y %H:%M")
-                    # Check if link has expired and remove if it has
-                    if closing_dt < datetime.now():
-                        # Remove the link in the database
-                        links_db = links_db.drop(links_db[(links_db['Current Zone'] == curr_node) & (links_db['Neighbour Zone'] == neighbour)].index)
-                        links_db = links_db.drop(links_db[(links_db['Current Zone'] == neighbour) & (links_db['Neighbour Zone'] == curr_node)].index)
-                        # Export updated DB and re-import
-                        links_db.to_csv(ACTIVE_LINKS_PATH, index=False)
-                        continue
-                    # Add neighbour to the queue
+        # User wants to check a zone's layout
+        if command == "!map":
+            # Get relevant parameters
+            queried_map = get_full_name(lc_message[1], roads_db, royals_db)
+            # Instantiate the node list with the queried zone
+            node_list = [queried_map]
+            visited_list = []
+            added_list = []
+            # Instantiate the graph
+            G = graphviz.Digraph()
+            # Get all the links in a recursive manner
+            while node_list:
+                # Get the first node in the queue
+                curr_node = node_list.pop(0)
+                visited_list.append(curr_node)
+                # Add the current node into the graph
+                add_node_to_graph(curr_node, roads_db, royals_db, G)
+                added_list.append(curr_node)
+                # Add the neighbouring nodes
+                neighbouring_nodes = list(links_db.loc[links_db['Current Zone'] == curr_node, "Neighbour Zone"].values)
+                for neighbour in neighbouring_nodes:
                     if neighbour not in visited_list:
-                        node_list.append(neighbour)
-                    # Calculate time left
-                    added_list = add_edge_to_graph(curr_node, neighbour, portal_type, closing_dt, added_list, roads_db, royals_db, G)
-        # Save the graph before sending it in the channel
-        filename = "Temp"
-        G.render(filename, format="png")
-        return True, [filename + ".png"]
+                        # Get the relveant information
+                        portal_type, closing_time = links_db.loc[(links_db['Current Zone'] == curr_node) & (links_db['Neighbour Zone'] == neighbour), ["Type", "Closing Time"]].values[0]
+                        closing_dt = datetime.strptime(closing_time, "%d/%m/%Y %H:%M")
+                        # Check if link has expired and remove if it has
+                        if closing_dt < datetime.now():
+                            # Remove the link in the database
+                            links_db = links_db.drop(links_db[(links_db['Current Zone'] == curr_node) & (links_db['Neighbour Zone'] == neighbour)].index)
+                            links_db = links_db.drop(links_db[(links_db['Current Zone'] == neighbour) & (links_db['Neighbour Zone'] == curr_node)].index)
+                            # Export updated DB and re-import
+                            links_db.to_csv(ACTIVE_LINKS_PATH, index=False)
+                            continue
+                        # Add neighbour to the queue
+                        if neighbour not in visited_list:
+                            node_list.append(neighbour)
+                        # Calculate time left
+                        added_list = add_edge_to_graph(curr_node, neighbour, portal_type, closing_dt, added_list, roads_db, royals_db, G)
+            # Save the graph before sending it in the channel
+            filename = "Temp"
+            G.render(filename, format="png")
+            return True, [filename + ".png"]
 
-    # Help command
-    if command == "!help":
-        return False, HELP_MESSAGE
+        # Help command
+        if command == "!help":
+            return False, HELP_MESSAGE
+    except:
+        return False, "Please check command"
 
 # Function to get full name if short form is given
 def get_full_name(given_name, roads_db, royals_db):
