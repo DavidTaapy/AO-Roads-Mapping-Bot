@@ -4,7 +4,7 @@ ROYALS_DETAILS_PATH = "./Data/Royals_Details.csv"
 UPDATE_LIST_PATH = "./Data/Update_List.csv"
 ACTIVE_LINKS_PATH = "./Data/Active_Links.csv"
 RESOURCE_TYPES_PATH = "./Data/Resource Types.csv"
-WORLD_XML_PATH = "./Data/Roads Game Files/Cluster/cluster/world.xml"
+WORLD_XML_PATH = "./Data/Roads Game Files/Cluster/world.xml"
 MAPS_DIRECTORY_PATH = "./Data/Roads Game Files/Maps/"
 
 # Help Message

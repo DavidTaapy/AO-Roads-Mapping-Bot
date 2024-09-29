@@ -34,7 +34,7 @@ def handle_response(message):
         # Open the XML file for the given map
         cluster = find_cluster(world_xml, curr_map) 
         file_id = cluster['file']
-        cluster_xml = open_xml(f"./Data/Roads Game Files/Cluster/cluster/{file_id}")
+        cluster_xml = open_xml(f"./Data/Roads Game Files/Cluster/{file_id}")
         # Instantiate the message
         map_tier = file_id[20:22]
         message = f"**{curr_map} ({map_tier})** contains the following:\n\n"
