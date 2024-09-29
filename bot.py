@@ -1,4 +1,3 @@
-# Import required libraries
 import discord
 import responses
 
@@ -36,11 +35,8 @@ async def send_message(message, user_message, is_private):
 # Function to run the discord bot
 def run_discord_bot():
     
-    # Instantiate the client with default intent
-    intent = discord.Intents.default()
-    intent.message_content = True
-    client = discord.Client(intents=intent)
-    
+    # Instantiate the client (no intents needed in discord.py 1.7.3)
+    client = discord.Client()
     # Print message when bot is running
     @client.event
     async def on_ready():
@@ -61,16 +57,13 @@ def run_discord_bot():
         print(f"{username} said: {user_message} in {channel}!")
 
         # Private message if user starts the message with a question-mark
-        if user_message[0] == '?':
+        if user_message.startswith('?'):
             # Remove the question mark
             user_message = user_message[1:]
             await send_message(message, user_message, True)
         # Send a public message
         else:
             await send_message(message, user_message, False)
-
-    # Run the client on Heroku
-    # client.run(os.environ["DISCORD_TOKEN"])
 
     # Run the client locally
     client.run(TOKEN)
